@@ -1,0 +1,503 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono+Poppins:ital,wght@0,100..700;1,100..700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --main-color: #2751b3;
+    --opacity-color: rgb(166, 191, 195);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: black;
+    
+}
+
+.first-section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.first-section video {
+    position: absolute;
+    z-index: -5;
+    
+    width: 100%;
+    transform: translateY(-18%);
+}
+
+.first-section::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 90%);
+}
+
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+header {
+    margin: 2% 5%;
+    position: fixed;
+    top: 0;
+    z-index: 3;
+}
+
+header #bg {
+    transition: background-color 0.2s ease-in-out;
+    background: rgba(0,0,0,0.5);
+}
+
+header .bg {
+    background: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    z-index: -1;
+    margin: -3rem -5rem;
+}
+
+
+header ul {
+    display: flex;
+    justify-content: flex-end;
+    margin: -18px 80rem;
+}
+
+header ul li {
+    list-style: none;
+    margin-right: 30%;
+}
+
+header ul li a {
+    color: rgba(255, 255, 255, 0.2);
+    transition: all.5s;
+}
+
+.selected {
+    color: rgba(255, 255, 255, 1);
+}
+
+.intro {
+    margin: 12rem 5rem;
+    
+}
+
+.intro .desc {
+    color: white;
+    max-width: 700px;
+    
+}
+
+.intro .desc .mouse {
+    width: 54px;
+}
+
+.intro .desc img:last-child {
+    position: absolute;
+    margin-left: 50%;
+    margin-top: -22%;
+    
+}
+
+.intro .desc h1 {
+    font-size: 8vh;
+    font-weight: 800;
+    margin-bottom: 5%;
+}
+
+.intro .desc h2 {
+    letter-spacing: 10px;
+    background: linear-gradient(to right, #e3a9e4 0%, #81B6FF 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.intro .media i {
+    transform: translate(0, 1px);
+}
+
+.intro .media a {
+    border: 1px solid white;
+    padding: 15px;
+    transition: all .5s;
+    margin-right: 10px;
+    border-radius: 7px;
+}
+
+.intro .media a:last-child {
+    background: white;
+    color: black;
+}
+
+.intro .media a:hover {
+    background: white;
+    color: black;
+}
+
+header .title i{
+    margin-left: 10px;
+}
+
+.second-section {
+    margin-top: 50%;
+    margin-left: 20%;
+    position: absolute;
+    color: white;
+}
+
+.second-section .overview {
+    margin-bottom: 15%;
+}
+
+.second-section .desc h2 {
+    font-weight: 100;
+    background: linear-gradient(to right, #e3a9e4 0%, #81B6FF 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.second-section  .desc h1 {
+    font-weight: 900;
+    font-size: 7vh;
+    
+}
+
+.second-section  .desc p {
+    color: var(--opacity-color);
+    width: 1000px;
+    font-size: 2vh;
+    font-weight: 600;
+}
+
+.second-section .desc2 {
+    margin-top: 10%;
+    text-align: center;
+    margin-left: 20%;
+    margin-bottom: 5%;
+}
+
+.second-section .desc2 h2 {
+    font-weight: 100;
+    background: linear-gradient(to right, #e3a9e4 0%, #81B6FF 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.second-section  .desc2 h1 {
+    font-weight: 900;
+    font-size: 7vh;
+    
+}
+
+.second-section .swiper {
+    margin-left: 15%;
+    z-index: 0;
+    width: 900px;
+    mask: linear-gradient(-90deg, transparent, white 20%, white 80%, transparent);
+
+}
+
+.second-section .swiperbg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: rgba(0,0,0,0.9);
+    margin-top: -30%;
+}
+
+.swiper-button-prev, .swiper-button-next {
+    background: linear-gradient(to right, #e3a9e4 0%, #81B6FF 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    z-index: -50;
+}
+
+.swiper-button-prev {
+    transform: translate(-200%, 500%);
+    z-index: -50;
+}
+
+.swiper-button-next{
+    transform: translate(350%, 500%);
+    z-index: -50;
+}
+
+.second-section .overview .cards {
+    display: flex;
+    margin-top: 5%;
+}
+
+.second-section .overview .cards .card {
+    border-radius: 20px;
+    box-shadow: 0 0 #0000, 0 0 #0000,0 0 #0000, 0 0 #0000,0px 35px 120px -15px #211e35;
+    width: 10rem;
+    height: 300px;
+    padding: 0 5%;
+    background: rgb(16, 18, 48);
+    border: 1px solid #61b3ff;
+    margin-right: 5%;
+}
+
+.second-section .overview .cards .card img {
+    width: 64px;
+    margin-top: 50px;
+    margin-left: 30%;
+}
+
+.second-section .overview .cards .card .titles {
+    margin-top: 50%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.second-section .overview  {
+    margin-top: 5%;
+    margin-left: -15%;
+}
+
+.second-section .overview  .pcard img {
+    width: 200%;
+    /* mask-image: linear-gradient(black 0, transparent); */
+}
+
+.second-section .knowledge .programming {
+    margin-bottom: 10%;
+}
+
+
+.second-section .knowledge .programming img{
+    width: 54px;
+    margin-right: 1.5%;
+}
+
+.second-section .knowledge .programming img:first-child {
+    width: 77px;
+}
+
+.second-section .knowledge {
+    margin-bottom: 5%;
+}
+
+.upBtn i {
+    opacity: 1;
+    bottom: 20px;
+    position: fixed;
+    color: white;
+    z-index: 15;
+    font-size: 6vh;
+    right: 20px;
+    border: 1px solid white;
+    border-radius: 1.5vh;
+    transition: all .2s;
+    
+}
+
+.upBtn i:active{
+    font-size: 7vh;
+}
+
+.upBtn i:hover {
+    background: white;
+    color: black;
+}
+
+.invisible {
+    opacity: 0;
+    transition: all .2s;
+}
+
+.visible {
+    opacity: 1;
+    transition: all .2s;
+}
+
+footer {
+    text-align: center;
+}
+
+footer span {
+    color: white;
+    padding: 2%;
+}
+
+.loadingscreen {
+    background: rgba(0,0,0,1);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 400;
+    position: fixed;
+    top: 0;
+    
+}
+
+.appear {
+    animation: aparecer 2s ease-in-out forwards;
+}
+
+
+.loader {
+    width: 50px;
+    padding: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #4b4aa5;
+    --_m: 
+      conic-gradient(#0000 10%,#000),
+      linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+            mask: var(--_m);
+    -webkit-mask-composite: source-out;
+            mask-composite: subtract;
+    animation: l3 1s infinite linear;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    z-index: 500;
+}
+
+.swipe {
+    margin-left: 50%;
+    margin-top: -18%;
+    margin-bottom: 22.3%;
+}
+
+.swipe span {
+    font-size: 15px;
+    position: absolute;
+    font-weight: 600;
+    margin-left: -7%;
+    animation: swipetext 4s infinite;
+}
+
+.path {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    background: rgba(149, 147, 241, 0.5);
+    border-radius: 40px;
+    margin-top: 20px;
+    margin-left: 70px;
+    visibility: hidden;
+}
+
+.hand-icon {
+    position: relative;
+    background-image: url(../images/hand.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100px;
+    height: 100px;
+    transform-origin: 52% 62%;
+}
+
+.arrow {
+    position: absolute;
+    font-size: 55px;
+    margin-top: -15%;
+    margin-left: 110%;
+    visibility: hidden;
+
+}
+
+.arrow2 {
+    position: absolute;
+    font-size: 55px;
+    margin-top: -15%;
+    margin-left: 8%;
+    visibility: hidden;
+}
+
+@keyframes swipe-hand {
+    25% { transform: translate(20px) rotate(30deg); }
+    50% { transform: translate(-20px) rotate(-15deg); }
+    100% { transform: translate(0px) rotate(0); }
+}
+
+@keyframes arrowAnim {
+    25% { 
+        transform: translate(20px);
+        visibility: visible;
+    }
+    50% { 
+        transform: translate(-20px); 
+        visibility: visible;
+    }
+    100% { 
+        transform: translate(0px); 
+        visibility: visible;
+    }
+}
+
+@keyframes arrowAnim2 {
+    25% { 
+        transform: translate(-20px);
+        visibility: visible;
+    }
+    50% { 
+        transform: translate(20px); 
+        visibility: visible;
+    }
+    100% { 
+        transform: translate(0px); 
+        visibility: visible;
+    }
+}
+
+@keyframes swipe-dot {
+  12% {
+    visibility: visible;
+    width: 40px;
+  }
+  25% {
+    visibility: visible;
+    transform: translate(-65px);
+    width: 20px;
+  }
+  26% { visibility: hidden; }
+}
+
+@keyframes l3 {to{transform: rotate(1turn)}}
+@keyframes aparecer {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+@keyframes swipetext {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+}
