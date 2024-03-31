@@ -5,9 +5,11 @@ import SecondSection from './parts/second-section';
 import UpButton from './components/upButton';
 import LoadingScreen from './components/loadingScreen';
 
+
 //Import styles
 import "./assets/css/main.css";
 import "./assets/css/scrollbar.css";
+import "./assets/css/responsive.css";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
