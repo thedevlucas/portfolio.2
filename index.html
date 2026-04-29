@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucas Juarez — Full Stack Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET & VARS ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:        #060608;
+      --surface:   #0d0d12;
+      --border:    rgba(255,255,255,0.06);
+      --green:     #00ff94;
+      --green-dim: rgba(0,255,148,0.15);
+      --green-glow:rgba(0,255,148,0.35);
+      --purple:    #7b5ea7;
+      --white:     #ffffff;
+      --muted:     #5a5a6e;
+      --text:      #c8c8d8;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CUSTOM CURSOR ─── */
+    #cursor {
+      width: 10px; height: 10px;
+      background: var(--green);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, background .2s;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,255,148,0.5);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: all 0.1s ease;
+    }
+
+    a:hover {
+      cursor: none;
+    }
+    body:has(a:hover) #cursor, body:has(button:hover) #cursor { width:20px; height:20px; }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9990; opacity: 0.4;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--green); border-radius: 2px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 6%;
+      z-index: 1000;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(6,6,8,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 800; font-size: 1.15rem;
+      letter-spacing: -.02em;
+      color: var(--white);
+    }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-mono); font-size: .78rem;
+      color: var(--muted); text-decoration: none; letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .25s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1px; background: var(--green);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      font-family: var(--font-mono); font-size: .78rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--green); text-decoration: none;
+      border: 1px solid var(--green);
+      padding: .5rem 1.4rem; border-radius: 4px;
+      transition: all .25s;
+    }
+    .nav-cta:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 24px var(--green-glow); }
+
+    /* ─── HERO ─── */
+    #home {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      padding: 10rem 6% 6rem;
+      position: relative; overflow: hidden;
+    }
+    /* grid background */
+    #home::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,148,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,148,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+    /* glow orbs */
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px); pointer-events: none;
+    }
+    .orb-1 { width: 500px; height: 500px; background: rgba(0,255,148,0.07); top: -100px; left: -150px; }
+    .orb-2 { width: 400px; height: 400px; background: rgba(123,94,167,0.08); bottom: 50px; right: -100px; }
+
+    .hero-tag {
+      font-family: var(--font-mono); font-size: .78rem; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--green);
+      display: flex; align-items: center; gap: .6rem;
+      margin-bottom: 1.8rem;
+      opacity: 0; animation: fadeUp .8s .2s forwards;
+    }
+    .hero-tag::before {
+      content: ''; width: 30px; height: 1px; background: var(--green);
+    }
+    .hero-h1 {
+      font-family: var(--font-head);
+      font-size: clamp(3.5rem, 9vw, 8.5rem);
+      font-weight: 800; line-height: .95;
+      letter-spacing: -.04em;
+      color: var(--white);
+      opacity: 0; animation: fadeUp .9s .35s forwards;
+    }
+    .hero-h1 .line-green { color: var(--green); display: block; }
+    .hero-sub {
+      margin-top: 2rem;
+      max-width: 520px;
+      font-size: 1.05rem; line-height: 1.7;
+      color: var(--muted);
+      opacity: 0; animation: fadeUp .9s .5s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; margin-top: 2.8rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp .9s .65s forwards;
+    }
+    .btn-primary {
+      background: var(--green); color: var(--bg);
+      font-family: var(--font-mono); font-size: .82rem;
+      font-weight: 500; letter-spacing: .06em;
+      padding: .85rem 2.2rem; border-radius: 4px;
+      text-decoration: none; border: none; cursor: none;
+      transition: all .25s; box-shadow: 0 0 30px rgba(0,255,148,0.3);
+    }
+    .btn-primary:hover { box-shadow: 0 0 50px rgba(0,255,148,0.5); transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent; color: var(--white);
+      font-family: var(--font-mono); font-size: .82rem;
+      letter-spacing: .06em;
+      padding: .85rem 2.2rem; border-radius: 4px;
+      text-decoration: none; border: 1px solid var(--border);
+      transition: all .25s; cursor: none;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    
+    /* Social strip */
+    .hero-socials {
+      position: absolute; left: 6%; bottom: 3rem;
+      display: flex; gap: 1.4rem;
+      opacity: 0; animation: fadeUp .9s .8s forwards;
+    }
+    .hero-socials a {
+      font-family: var(--font-mono); font-size: .72rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: .5rem;
+      transition: color .25s;
+    }
+    .hero-socials a:hover { color: var(--green); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; right: 6%; bottom: 3rem;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      opacity: 0; animation: fadeUp .9s .9s forwards;
+    }
+    .scroll-hint span {
+      font-family: var(--font-mono); font-size: .65rem;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+      writing-mode: vertical-lr;
+    }
+    .scroll-line {
+      width: 1px; height: 60px; background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section { padding: 7rem 6%; }
+    .section-tag {
+      font-family: var(--font-mono); font-size: .72rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--green); display: flex; align-items: center; gap: .6rem;
+      margin-bottom: 1.2rem;
+    }
+    .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--green); }
+    .section-h2 {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800; letter-spacing: -.03em;
+      color: var(--white); line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ─── ABOUT ─── */
+    #about { position: relative; }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center; margin-top: 4rem;
+    }
+    .about-left .big-text {
+      font-family: var(--font-head);
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-weight: 500; color: var(--white);
+      line-height: 1.6;
+    }
+    .about-left .big-text em {
+      font-style: normal; color: var(--green);
+    }
+    .about-left p {
+      margin-top: 1.5rem; color: var(--muted); line-height: 1.8; font-size: .95rem;
+    }
+    .about-right { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ─── 3D STAT CARDS ─── */
+    .stat-card-wrap { perspective: 900px; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.8rem;
+      position: relative; overflow: hidden;
+      transform-style: preserve-3d;
+      transition: border-color .3s, box-shadow .3s;
+      will-change: transform;
+    }
+    /* radial shine that follows mouse */
+    .stat-card .shine {
+      position: absolute; inset: 0; border-radius: 12px;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(0,255,148,0.12) 0%, transparent 65%);
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    .stat-card:hover .shine { opacity: 1; }
+    /* gloss top edge */
+    .stat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,148,0.55), transparent);
+      opacity: 0; transition: opacity .35s;
+    }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card:hover { border-color: var(--green-glow); box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,255,148,0.07); }
+    .stat-num {
+      font-family: var(--font-head); font-size: 2.5rem; font-weight: 800;
+      color: var(--green); letter-spacing: -.04em; line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-mono); font-size: .72rem;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+      margin-top: .4rem;
+    }
+
+    /* ─── SKILLS ─── */
+    #skills { background: var(--surface); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 1rem; margin-top: 3.5rem;
+    }
+    .skill-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: .6rem;
+      transition: all .3s; text-align: center;
+    }
+    .skill-chip:hover {
+      border-color: var(--green-glow);
+      box-shadow: 0 0 20px rgba(0,255,148,0.08);
+      transform: translateY(-4px);
+    }
+    .skill-chip img { width: 36px; height: 36px; object-fit: contain; filter: grayscale(0.3); }
+    .skill-chip span {
+      font-family: var(--font-mono); font-size: .68rem;
+      letter-spacing: .05em; color: var(--muted);
+    }
+
+    /* ─── SERVICES ─── */
+    #services {}
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem; margin-top: 3.5rem;
+    }
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: all .35s;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--green), transparent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .4s;
+    }
+    .service-card:hover { border-color: var(--green-dim); transform: translateY(-6px); }
+    .service-card:hover::after { transform: scaleX(1); }
+    .service-icon {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.8rem; font-size: 1.3rem;
+    }
+
+    .service-icon i,
+    .service-icon svg {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+
+      color: #00ff94;
+      fill: #00ff94;
+
+      /* glow blanco suave */
+      filter: drop-shadow(0 0 4px rgba(0, 255, 0, 0.2)) drop-shadow(0 0 8px rgba(0, 255, 0, 0.2)) drop-shadow(0 0 16px rgba(0, 255, 0, 0.25));
+
+      transition: all 0.3s ease;
+    }
+
+    .service-icon i:hover,
+    .service-icon svg:hover {
+      transform: scale(1.05);
+
+      filter: drop-shadow(0 0 6px rgba(0,255,0,0.8))
+        drop-shadow(0 0 12px rgba(0,255,0,0.5))
+        drop-shadow(0 0 20px rgba(0,255,0,0.3));
+    }
+    .service-card h3 {
+      font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
+      color: var(--white); margin-bottom: .8rem;
+    }
+    .service-card p { font-size: .9rem; color: var(--muted); line-height: 1.7; }
+
+    /* ─── PROJECTS ─── */
+    #projects { position: relative; }
+    .projects-list { margin-top: 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 2rem;
+      padding: 2.5rem 3rem;
+      transition: all .3s; position: relative; overflow: hidden;
+    }
+   .project-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--green);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .4s;
+  }
+
+    .integrate-card::before {
+      background: #f08030;
+    }
+    .project-card:hover { border-color: var(--border); transform: translateX(6px); background: rgba(13,13,18,0.8); }
+    .project-card:hover::before { transform: scaleY(1); }
+    .project-num {
+      position: absolute; top: 2rem; right: 3rem;
+      font-family: var(--font-mono); font-size: .72rem;
+      color: var(--border); letter-spacing: .1em;
+    }
+    .project-type {
+      font-family: var(--font-mono); font-size: .7rem;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--green); margin-bottom: .6rem;
+    }
+    .project-card h3 {
+      font-family: var(--font-head); font-size: 1.6rem; font-weight: 800;
+      color: var(--white); margin-bottom: .8rem; letter-spacing: -.02em;
+    }
+    .project-card p { font-size: .9rem; color: var(--muted); line-height: 1.7; max-width: 600px; }
+    .project-tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1.2rem; }
+    .tag {
+      font-family: var(--font-mono); font-size: .68rem;
+      padding: .28rem .75rem; border-radius: 40px;
+      border: 1px solid var(--border); color: var(--muted);
+      letter-spacing: .05em;
+    }
+    .project-link {
+      display: flex; align-items: center; gap: .5rem;
+      font-family: var(--font-mono); font-size: .78rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--green); text-decoration: none;
+      white-space: nowrap;
+      transition: gap .25s;
+    }
+    .project-link:hover { gap: .9rem; }
+    .arrow { font-size: 1.1rem; transition: transform .25s; }
+    .project-link:hover .arrow { transform: translate(3px, -3px); }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      background: var(--surface);
+      text-align: center;
+    }
+    .contact-inner { max-width: 640px; margin: 0 auto; }
+    .contact-inner .section-tag { justify-content: center; }
+    .contact-inner .section-tag::before { display: none; }
+    .contact-huge {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800; letter-spacing: -.05em;
+      color: var(--white); line-height: .95;
+      margin: 1.5rem 0;
+    }
+    .contact-huge span { color: var(--green); }
+    .contact-inner p { color: var(--muted); margin-bottom: 2.5rem; line-height: 1.7; }
+    .contact-btn-large {
+      display: inline-flex; align-items: center; gap: .8rem;
+      background: var(--green); color: var(--bg);
+      font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+      padding: 1.1rem 3rem; border-radius: 6px;
+      text-decoration: none; transition: all .3s;
+      box-shadow: 0 0 40px rgba(0,255,148,0.25);
+    }
+    .contact-btn-large:hover { box-shadow: 0 0 70px rgba(0,255,148,0.5); transform: translateY(-3px); }
+    .contact-links { display: flex; justify-content: center; gap: 2.5rem; margin-top: 3rem; }
+    .contact-links a {
+      font-family: var(--font-mono); font-size: .75rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color .25s;
+    }
+    .contact-links a:hover { color: var(--green); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2rem 6%;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    footer p { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); letter-spacing: .06em; }
+    footer span { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+    footer span em { color: var(--green); font-style: normal; }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* Starbucks card background */
+    .starbucks-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .starbucks-card .project-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 45%;
+      height: 100%;
+      background-image: url('/assets/images/starbucks.jpeg');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+    .starbucks-card .project-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--surface), transparent);
+    }
+    .starbucks-card > div,
+    .starbucks-card > a {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Starbucks card background */
+    .integrate-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .integrate-card .project-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 45%;
+      height: 100%;
+      background-image: url('/assets/images/integrate.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+    .integrate-card .project-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--surface), transparent);
+    }
+    .integrate-card > div,
+    .integrate-card > a {
+      position: relative;
+      z-index: 1;
+    }
+    
+    
+
+    /* ─── GITHUB CARD ─── */
+    .github-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center;
+      text-decoration: none;
+      padding: 3rem 2.5rem !important;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      transform: none !important;
+    }
+    .github-card .project-bg-full {
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/images/github.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+      transition: transform 0.5s ease;
+    }
+    .github-card:hover .project-bg-full {
+      transform: scale(1.05);
+    }
+    .github-card .project-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(6,6,8,0.78) 0%, rgba(6,6,8,0.55) 100%);
+      z-index: 1;
+    }
+    .github-card .card-center-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .github-card h3, .workana-card h3 {
+      font-family: var(--font-head);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -.03em;
+    }
+    .github-card p, .workana-card p {
+      font-size: .92rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.65;
+      max-width: 440px;
+    }
+    .github-card::before, .workana-card::before { display: none; }
+    .github-card:hover { transform: none !important; }
+
+    /* ─── WORKANA CARD ─── */
+    .workana-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center;
+      text-decoration: none;
+      padding: 3rem 2.5rem !important;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      transform: none !important;
+    }
+    .workana-card .project-bg-full {
+      position: absolute;
+      inset: 0;
+      background-image: url('/assets/images/workana.jpeg');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+      transition: transform 0.5s ease;
+    }
+    .workana-card:hover .project-bg-full {
+      transform: scale(1.05);
+    }
+    .workana-card .project-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(6,6,8,0.72) 0%, rgba(6,6,8,0.5) 100%);
+      z-index: 1;
+    }
+    .workana-card .card-center-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .workana-card:hover { transform: none !important; }
+
+    /* Shared banner-link button */
+    .banner-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: .6rem 1.4rem;
+      border-radius: 40px;
+      text-decoration: none;
+      backdrop-filter: blur(6px);
+      transition: all .3s;
+      margin-top: .5rem;
+    }
+    .banner-link:hover {
+      background: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.5);
+      gap: .85rem;
+    }
+
+    /* Two-column layout for the last two cards */
+    .projects-double {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 700px) {
+      .projects-double { grid-template-columns: 1fr; }
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap {
+      overflow: hidden; padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .marquee-track {
+      display: flex; gap: 4rem; width: max-content;
+      animation: marquee 18s linear infinite;
+    }
+    .marquee-item {
+      font-family: var(--font-head); font-size: 1.2rem;
+      font-weight: 700; color: var(--muted); letter-spacing: .06em;
+      white-space: nowrap; display: flex; align-items: center; gap: 1rem;
+    }
+    .marquee-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* Scroll-reveal */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* Stagger */
+    .stagger > * { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+    .stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:.1s; }
+    .stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:.2s; }
+    .stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:.3s; }
+    .stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:.4s; }
+    .stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:.5s; }
+    .stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:.6s; }
+    .stagger.visible > *:nth-child(7) { opacity:1; transform:none; transition-delay:.7s; }
+    .stagger.visible > *:nth-child(8) { opacity:1; transform:none; transition-delay:.8s; }
+    .stagger.visible > *:nth-child(9) { opacity:1; transform:none; transition-delay:.9s; }
+    .stagger.visible > *:nth-child(10) { opacity:1; transform:none; transition-delay:1s; }
+    .stagger.visible > *:nth-child(11) { opacity:1; transform:none; transition-delay:1.1s; }
+
+    /* ─── MOBILE ─── */
+    .hamburger { display: none; background: none; border: none; cursor: none; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: all .3s; }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+        background: var(--bg); align-items: center; justify-content: center;
+        gap: 2.5rem; z-index: 999;
+      }
+      .nav-links.open a { font-size: 1.2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .project-card { grid-template-columns: 1fr; padding: 2rem; }
+      .project-link { justify-content: flex-start; }
+      .hero-socials { display: none; }
+      .scroll-hint { display: none; }
+    }
+    @media (max-width: 600px) {
+      .skills-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#home" class="nav-logo">LJ<span>.</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="https://www.linkedin.com/in/lucasj2-link/" target="_blank" class="nav-cta">Hire me</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <p class="hero-tag">Available for work</p>
+    <h1 class="hero-h1">
+      LUCAS<br>
+      <span class="line-green">JUAREZ</span>
+    </h1>
+    <p class="hero-sub">
+      Full Stack Developer & UI/UX Designer building fast, secure, and scalable digital products — from pixel-perfect interfaces to robust back-end systems.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">View my work</a>
+      <a href="assets/pdf/Lucas juarez.pdf" target="_blank" class="btn-ghost">Download CV</a>
+    </div>
+
+    <div class="hero-socials">
+      <a href="https://github.com/thedevlucas" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/lucasj2-link/" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item"><span class="marquee-dot"></span>Full Stack Development</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>UI/UX Design</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>API Integration</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Responsive Design</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Mobile Development</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Database Architecture</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Performance Optimization</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Full Stack Development</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>UI/UX Design</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>API Integration</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Responsive Design</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Mobile Development</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Database Architecture</div>
+      <div class="marquee-item"><span class="marquee-dot"></span>Performance Optimization</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-tag reveal">About me</div>
+    <h2 class="section-h2 reveal">Turning ideas into<br>digital reality.</h2>
+    <div class="about-grid">
+      <div class="about-left reveal-left">
+        <p class="big-text">
+          I'm a <em>Full Stack Developer</em> and <em>UI/UX Designer</em> based in Argentina, passionate about building digital products that are fast, beautiful, and purposeful.
+        </p>
+        <p>
+          I specialize in end-to-end product development — from designing intuitive interfaces to engineering robust back-end systems. Every project I take on is built with care for performance, security, and scalability.
+        </p>
+        <p style="margin-top:.8rem">
+          When I'm not coding, I'm exploring new technologies, contributing to open-source projects, and refining my craft as a developer and designer.
+        </p>
+      </div>
+      <div class="about-right stagger reveal-right">
+        <div class="stat-card-wrap">
+          <div class="stat-card">
+            <div class="shine"></div>
+            <div class="stat-num">2+</div>
+            <div class="stat-label">Years of experience</div>
+          </div>
+        </div>
+        <div class="stat-card-wrap">
+          <div class="stat-card">
+            <div class="shine"></div>
+            <div class="stat-num">10+</div>
+            <div class="stat-label">Projects completed</div>
+          </div>
+        </div>
+        <div class="stat-card-wrap">
+          <div class="stat-card">
+            <div class="shine"></div>
+            <div class="stat-num">24</div>
+            <div class="stat-label">GitHub repositories</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-tag reveal">Tech stack</div>
+    <h2 class="section-h2 reveal">Tools I work with.</h2>
+    <div class="skills-grid stagger">
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+        <span>JavaScript</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">
+        <span>React</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
+        <span>Node.js</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+        <span>Python</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+        <span>Java</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP">
+        <span>PHP</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB">
+        <span>MongoDB</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
+        <span>MySQL</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind">
+        <span>Tailwind</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap">
+        <span>Bootstrap</span>
+      </div>
+      <div class="skill-chip">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+        <span>Git</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-tag reveal">What I offer</div>
+    <h2 class="section-h2 reveal">Services.</h2>
+    <div class="services-grid stagger">
+      <div class="service-card">
+        <div class="service-icon"><i class="bx bx-code-alt"></i></div>
+        <h3>Web Development</h3>
+        <p>Modern, high-performance websites and web applications — from landing pages to complex full-stack systems. Responsive, SEO-ready, and built for scale.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="bx bx-palette" ></i></div>
+        <h3>UI/UX Design</h3>
+        <p>User-centered interfaces that are both beautiful and intuitive. I design with purpose — every interaction, layout, and visual detail is intentional.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="bx bx-mobile"></i></div>
+        <h3>Mobile Development</h3>
+        <p>Cross-platform mobile applications for iOS and Android with smooth performance and native-like experiences users will love.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"  
+fill="currentColor" viewBox="0 0 24 24" >
+<!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+<path d="M21 14h-1c0-1.08-.21-2.13-.63-3.11A7.95 7.95 0 0 0 15.86 7c-.45-1.72-2-2.99-3.86-2.99S8.6 5.29 8.14 7q-.99.54-1.8 1.35c-.73.73-1.31 1.59-1.71 2.54C4.21 11.88 4 12.92 4 14H3c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H6c0-.81.16-1.6.47-2.34.3-.71.73-1.36 1.29-1.91.15-.15.33-.27.49-.41.56 1.54 2.02 2.65 3.75 2.65s3.19-1.11 3.75-2.65c.17.13.34.25.49.41.55.55.98 1.19 1.29 1.91.31.74.47 1.52.47 2.33h-1c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1ZM6 18H4v-2h2zm6-8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2m8 8h-2v-2h2z"></path>
+</svg></div>
+        <h3>API Integration</h3>
+        <p>Seamless integration with third-party APIs and services. I build and consume REST APIs that are secure, efficient, and well-documented.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"  
+fill="currentColor" viewBox="0 0 24 24" >
+<!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+<path d="M12 2C7.66 2 4 3.83 4 6v12c0 2.17 3.66 4 8 4s8-1.83 8-4V6c0-2.17-3.66-4-8-4m0 2c3.68 0 5.91 1.49 6 2-.09.51-2.32 2-6 2S6.07 6.49 6 6.01C6.07 5.51 8.31 4 12 4M6 8.61C7.48 9.46 9.64 10 12 10s4.52-.55 6-1.39V10c-.07.5-2.31 2-6 2s-5.93-1.51-6-2zm0 4c1.48.85 3.64 1.39 6 1.39s4.52-.55 6-1.39V14c-.07.5-2.31 2-6 2s-5.93-1.51-6-2zM12 20c-3.69 0-5.93-1.51-6-2v-1.39c1.48.85 3.64 1.39 6 1.39s4.52-.55 6-1.39V18c-.07.5-2.31 2-6 2"></path>
+</svg></div>
+        <h3>Database Design</h3>
+        <p>Robust database architecture using SQL and NoSQL technologies. Clean schemas, optimized queries, and reliable data management.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="bx bx-bolt-circle"></i></div>
+        <h3>Performance Optimization</h3>
+        <p>Speed matters. I audit and optimize existing codebases for load time, rendering performance, and resource efficiency.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-tag reveal">Selected work</div>
+    <h2 class="section-h2 reveal">Projects.</h2>
+    <div class="projects-list">
+
+      <div class="project-card reveal integrate-card">
+        <div class="project-bg"></div>
+        <div>
+          <div class="project-num">01</div>
+          <div class="project-type" style="color: #f08030;">Full Stack · Professional Platform</div>
+          <h3>Integrate</h3>
+          <p>A modern platform designed for connecting users with mental health professionals,
+      featuring responsive profile pages, advanced filtering, SEO-focused architecture,
+      and an intuitive user experience tailored for accessibility and trust.</p>
+          <div class="project-tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">ExpressJS</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">UI/UX</span>
+            <span class="tag">Responsive</span>
+            <span class="tag">SEO</span>
+          </div>
+          <a href="https://e-integra.com" target="_blank" class="project-link" style="margin-top: 25px; margin-left: 5px; max-width: 120px; color: #f08030;">
+          View Site <span class="arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="project-card reveal starbucks-card">
+        <div class="project-bg"></div>
+        <div>
+          <div class="project-num">02</div>
+          <div class="project-type">Frontend · Responsive Design</div>
+          <h3>Starbucks Responsive Clone</h3>
+          <p>A pixel-perfect, fully responsive recreation of the Starbucks website, built to demonstrate expertise in modern web development, cross-device compatibility, accessibility, and performance best practices.</p>
+          <div class="project-tags">
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Responsive</span>
+            <span class="tag">UI/UX</span>
+          </div>
+          <a href="https://github.com/thedevlucas/starbucks-design-responsive" target="_blank" class="project-link" style="margin-top: 25px; margin-left: 5px; max-width: 120px;">
+          View code <span class="arrow">↗</span>
+          </a>
+        </div>
+        
+      </div>
+
+      <!-- GitHub + Workana side by side -->
+      <div class="projects-double reveal">
+
+        <a href="https://github.com/thedevlucas" target="_blank" class="project-card github-card">
+          <div class="project-bg-full"></div>
+          <div class="project-bg-overlay"></div>
+          <div class="card-center-content">
+            <h3>GitHub</h3>
+            <p>Browse all 24 repositories — experiments, open-source contributions, and side projects. Always building, always learning.</p>
+            <span class="banner-link">View profile <span class="arrow">↗</span></span>
+          </div>
+        </a>
+
+        <a href="https://www.workana.com/freelancer/28f18c4cba637871d8f96ddd83093e95" target="_blank" class="project-card workana-card">
+          <div class="project-bg-full"></div>
+          <div class="project-bg-overlay"></div>
+          <div class="card-center-content">
+            <h3>Workana</h3>
+            <p>Find me on Workana to hire me for freelance projects — web development, UI/UX design, APIs, and more.</p>
+            <span class="banner-link">Hire me <span class="arrow">↗</span></span>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-tag reveal">Get in touch</div>
+      <h2 class="contact-huge reveal">Let's<br><span>work.</span></h2>
+      <p class="reveal">Have a project in mind, or just want to talk? I'm open to freelance opportunities, collaborations, and full-time roles. Don't hesitate to reach out.</p>
+      <a href="https://www.linkedin.com/in/lucasj2-link/" target="_blank" class="contact-btn-large reveal">
+        Say hello ↗
+      </a>
+      <div class="contact-links reveal">
+        <a href="https://github.com/thedevlucas" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/lucasj2-link/" target="_blank">LinkedIn</a>
+        <a href="assets/pdf/Lucas juarez.pdf" target="_blank">Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© <script>document.write(new Date().getFullYear())</script> Lucas Juarez. All rights reserved.</p>
+    <span>Made with <em>passion</em> &amp; 🧉</span>
+  </footer>
+
+  <script>
+    // ─── Cursor ───
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+
+    // ─── Navbar scroll ───
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ─── Mobile menu ───
+    const ham = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    ham.addEventListener('click', () => {
+      ham.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      ham.classList.remove('open'); navLinks.classList.remove('open');
+    }));
+
+    // ─── Scroll reveal ───
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stagger').forEach(el => {
+      observer.observe(el);
+    });
+
+    // ─── 3D TILT — stat cards ───
+    document.querySelectorAll('.stat-card-wrap').forEach(wrap => {
+      const card = wrap.querySelector('.stat-card');
+      const shine = card.querySelector('.shine');
+
+      wrap.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const cx = r.width / 2, cy = r.height / 2;
+        const rotY =  ((x - cx) / cx) * 14;  // max ±14°
+        const rotX = -((y - cy) / cy) * 10;  // max ±10°
+
+        card.style.transform = `perspective(900px) rotateX(${rotX}deg) scale3d(1.03,1.03,1.03)`;
+
+        // move shine
+        const pctX = (x / r.width  * 100).toFixed(1) + '%';
+        const pctY = (y / r.height * 100).toFixed(1) + '%';
+        shine.style.setProperty('--mx', pctX);
+        shine.style.setProperty('--my', pctY);
+        shine.style.background = `radial-gradient(circle at ${pctX} ${pctY}, rgba(0,255,148,0.14) 0%, transparent 65%)`;
+      });
+
+      wrap.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform .5s ease, border-color .3s, box-shadow .3s';
+        card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+        setTimeout(() => card.style.transition = 'border-color .3s, box-shadow .3s', 500);
+      });
+
+      wrap.addEventListener('mouseenter', () => {
+        card.style.transition = 'border-color .3s, box-shadow .3s';
+      });
+    });
+
+    // ─── SUBTLE PARALLAX — about-left text ───
+    const aboutLeft = document.querySelector('.about-left');
+    if (aboutLeft) {
+      document.addEventListener('mousemove', e => {
+        const rect = aboutLeft.getBoundingClientRect();
+        // only active when section is visible
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const cx = window.innerWidth  / 2;
+        const cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx;
+        const dy = (e.clientY - cy) / cy;
+        const tiltX = dy * -4;
+        const tiltY = dx *  5;
+        aboutLeft.style.transform = `perspective(1200px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+        aboutLeft.style.transition = 'transform .12s ease-out';
+      });
+
+      document.addEventListener('mouseleave', () => {
+        aboutLeft.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+        aboutLeft.style.transition = 'transform .6s ease';
+      });
+    }
+  </script>
+</body>
+</html>
